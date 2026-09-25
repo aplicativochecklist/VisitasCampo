@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#151515" />
+  <title>Field Visit | John Deere Construção</title>
+  <style>
+    :root {
+      --black: #151515;
+      --black-soft: #252525;
+      --yellow: #f5c400;
+      --yellow-soft: #fff4bd;
+      --background: #f6f6f1;
+      --card: #ffffff;
+      --text: #22221f;
+      --muted: #77776e;
+      --border: #deded5;
+      --shadow: 0 14px 38px rgba(20, 20, 20, .07);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-width: 320px;
+      background: var(--background);
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    button, input, select, textarea { font: inherit; }
+    button, label, input[type="file"] { cursor: pointer; }
+    a { color: inherit; text-decoration: none; }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      border-bottom: 1px solid #e2e2db;
+      background: rgba(250, 250, 247, .94);
+      backdrop-filter: blur(14px);
+    }
+
+    .topbar-inner {
+      width: min(1240px, calc(100% - 40px));
+      min-height: 72px;
+      margin: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .brand-mark {
+      display: grid;
+      width: 40px;
+      height: 40px;
+      place-items: center;
+      border-radius: 12px;
+      background: var(--black);
+      color: var(--yellow);
+      font-size: 21px;
+      font-weight: 900;
+    }
+    .brand-name { font-weight: 900; letter-spacing: -.04em; }
+    .brand-subtitle {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .17em;
+      text-transform: uppercase;
+    }
+    .nav { display: flex; gap: 28px; color: #77776e; font-size: 13px; font-weight: 700; }
+    .nav a:hover { color: var(--black); }
+    .profile {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 13px 8px 8px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: white;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .profile-icon {
+      display: grid;
+      width: 27px;
+      height: 27px;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--yellow-soft);
+    }
+
+    main {
+      width: min(1240px, calc(100% - 40px));
+      margin: auto;
+      padding: 48px 0 68px;
+    }
+    .layout { display: grid; grid-template-columns: minmax(0, 1fr) 350px; gap: 42px; align-items: start; }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 18px;
+      padding: 7px 12px;
+      border: 1px solid #e0dcbf;
+      border-radius: 999px;
+      background: rgba(255,255,255,.7);
+      color: #6c5b00;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+    .eyebrow::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--yellow); }
+    h1 { max-width: 700px; margin: 0; font-size: clamp(42px, 6vw, 78px); line-height: .98; letter-spacing: -.07em; }
+    h1 strong { color: #d29f00; }
+    .intro { max-width: 620px; margin: 22px 0 34px; color: #707068; font-size: 16px; line-height: 1.7; }
+
+    .form-card {
+      margin-top: 18px;
+      padding: 28px;
+      border: 1px solid #e2e2da;
+      border-radius: 18px;
+      background: rgba(255,255,255,.93);
+      box-shadow: var(--shadow);
+    }
+    .section-title { display: flex; align-items: center; gap: 13px; }
+    .section-icon {
+      display: grid;
+      width: 42px;
+      height: 42px;
+      place-items: center;
+      border-radius: 12px;
+      background: var(--yellow-soft);
+      color: #806300;
+      font-size: 20px;
+    }
+    .section-kicker { margin: 0; color: #929289; font-size: 10px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
+    h2 { margin: 4px 0 0; font-size: 19px; letter-spacing: -.04em; }
+    .optional { margin-left: auto; color: #999990; font-size: 11px; font-weight: 700; }
+    .required { color: #bd9200; }
+
+    .fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-top: 26px; }
+    .field { display: flex; flex-direction: column; gap: 8px; color: #55554c; font-size: 12px; font-weight: 800; }
+    .field.full { grid-column: 1 / -1; }
+    input, textarea, select {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      background: white;
+      color: var(--text);
+      outline: none;
+      transition: border-color .16s ease, box-shadow .16s ease;
+    }
+    input, select { height: 48px; padding: 0 14px; }
+    textarea { min-height: 130px; padding: 13px 14px; resize: vertical; line-height: 1.5; }
+    input:focus, textarea:focus, select:focus { border-color: #c69b00; box-shadow: 0 0 0 4px rgba(198, 155, 0, .12); }
+    input::placeholder, textarea::placeholder { color: #aaa9a0; }
+
+    .status-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .status-option {
+      display: flex;
+      height: 48px;
+      align-items: center;
+      gap: 8px;
+      padding: 0 12px;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      background: white;
+      color: #77776e;
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .status-option.active { border-color: #e0b600; background: #fff9dc; color: #775d00; box-shadow: 0 0 0 3px rgba(198,155,0,.1); }
+    .status-option.stopped.active { border-color: var(--black); background: var(--black); color: white; box-shadow: 0 0 0 3px rgba(20,20,20,.1); }
+    .status-dot { width: 8px; height: 8px; flex: 0 0 auto; border-radius: 50%; background: var(--yellow); }
+
+    .photo-dropzone {
+      display: flex;
+      min-height: 130px;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      border: 2px dashed #dec65d;
+      border-radius: 14px;
+      background: #fffdf1;
+      text-align: center;
+      transition: background .16s ease, border-color .16s ease;
+    }
+    .photo-dropzone:hover { border-color: #b58c00; background: #fff9d9; }
+    .photo-dropzone-icon { font-size: 28px; }
+    .photo-dropzone strong { display: block; font-size: 13px; }
+    .photo-dropzone small { display: block; margin-top: 4px; color: #8d8d83; font-size: 11px; }
+    .photo-button { display: inline-block; margin-top: 8px; padding: 8px 12px; border-radius: 8px; background: var(--black); color: var(--yellow); font-size: 11px; font-weight: 800; }
+    #photos-input { display: none; }
+    .photo-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 15px; }
+    .photo-preview { position: relative; overflow: hidden; border: 1px solid var(--border); border-radius: 11px; background: #f7f7f1; }
+    .photo-preview img { display: block; width: 100%; height: 125px; object-fit: cover; }
+    .photo-preview button { position: absolute; top: 7px; right: 7px; width: 27px; height: 27px; border: 0; border-radius: 50%; background: rgba(20,20,20,.85); color: white; font-size: 16px; line-height: 1; }
+    .photo-name { overflow: hidden; padding: 8px; color: #68685f; font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
+
+    .actions { display: flex; align-items: center; justify-content: space-between; gap: 15px; margin-top: 21px; }
+    .button { min-height: 52px; padding: 0 22px; border: 0; border-radius: 11px; font-weight: 800; }
+    .button.primary { background: var(--black); color: var(--yellow); box-shadow: 0 12px 22px rgba(20,20,20,.15); }
+    .button.primary:hover { background: #303030; }
+    .button.clear { background: transparent; color: #77776e; }
+    .button.clear:hover { color: var(--black); }
+
+    .summary { position: sticky; top: 92px; overflow: hidden; border: 1px solid #e1e1d9; border-radius: 18px; background: white; box-shadow: var(--shadow); }
+    .summary-head { position: relative; overflow: hidden; padding: 25px; background: var(--black); color: white; }
+    .summary-head::before, .summary-head::after { content: ""; position: absolute; border: 22px solid rgba(245,196,0,.22); border-radius: 50%; }
+    .summary-head::before { width: 150px; height: 150px; right: -60px; top: -85px; }
+    .summary-head::after { width: 120px; height: 120px; left: -65px; bottom: -90px; }
+    .summary-head > * { position: relative; z-index: 1; }
+    .summary-head small { color: var(--yellow); font-size: 10px; font-weight: 800; letter-spacing: .2em; text-transform: uppercase; }
+    .summary-head h2 { margin-top: 11px; font-size: 25px; }
+    .completion { display: flex; align-items: end; justify-content: space-between; margin-top: 30px; }
+    .completion strong { font-size: 44px; letter-spacing: -.07em; }
+    .completion span { color: #f5d85d; font-size: 18px; }
+    .completion p { color: #f4e8a6; font-size: 11px; line-height: 1.5; text-align: right; }
+    .progress { height: 6px; margin-top: 18px; overflow: hidden; border-radius: 99px; background: rgba(255,255,255,.2); }
+    .progress-bar { height: 100%; width: 8%; border-radius: inherit; background: var(--yellow); transition: width .25s ease; }
+    .summary-list { padding: 10px 24px; }
+    .summary-item { display: flex; gap: 12px; padding: 16px 0; border-bottom: 1px solid #eeeeea; }
+    .summary-item:last-child { border-bottom: 0; }
+    .summary-item-icon { color: #b08a00; }
+    .summary-label { margin: 0; color: #999990; font-size: 10px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+    .summary-value { margin: 4px 0 0; overflow: hidden; font-size: 13px; font-weight: 800; text-overflow: ellipsis; white-space: nowrap; }
+    .summary-subvalue { margin: 3px 0 0; color: #929289; font-size: 11px; }
+    .summary-foot { padding: 15px 24px; border-top: 1px solid #eeeeea; background: #fafaf7; color: #77776e; font-size: 11px; font-weight: 700; }
+    .tip { margin-top: 16px; padding: 18px; border: 1px solid #e4e4db; border-radius: 16px; background: rgba(255,255,255,.75); color: #66665d; font-size: 12px; line-height: 1.5; }
+    .tip strong { display: block; margin-bottom: 5px; color: var(--text); }
+
+    footer { border-top: 1px solid #e2e2da; padding: 18px 20px; color: #929289; font-size: 11px; }
+    .footer-inner { width: min(1240px, 100%); margin: auto; display: flex; justify-content: space-between; gap: 15px; }
+    .toast { position: fixed; right: 22px; bottom: 22px; z-index: 20; display: none; max-width: 330px; padding: 15px 18px; border-radius: 12px; background: var(--black); color: white; box-shadow: 0 14px 32px rgba(0,0,0,.2); font-size: 13px; font-weight: 700; }
+    .toast.show { display: block; animation: toast-in .2s ease-out; }
+    @keyframes toast-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+    @media (max-width: 900px) {
+      .layout { grid-template-columns: 1fr; }
+      .summary { position: static; }
+      .nav { display: none; }
+    }
+    @media (max-width: 600px) {
+      .topbar-inner, main { width: min(100% - 28px, 560px); }
+      main { padding-top: 30px; }
+      .form-card { padding: 20px 17px; }
+      .fields { grid-template-columns: 1fr; }
+      .field.full { grid-column: auto; }
+      h1 { font-size: 43px; }
+      .intro { font-size: 14px; }
+      .photo-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .photo-preview img { height: 110px; }
+      .actions { flex-direction: column-reverse; align-items: stretch; }
+      .button { width: 100%; }
+      .footer-inner { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="#top" aria-label="Field Visit">
+        <span class="brand-mark">⚙</span>
+        <span><strong class="brand-name">Field Visit</strong><small class="brand-subtitle">John Deere · Construção</small></span>
+      </a>
+      <nav class="nav" aria-label="Navegação principal">
+        <a href="#visita">Nova visita</a>
+        <a href="#equipamento">Equipamento</a>
+        <a href="#fotos">Fotos & notas</a>
+      </nav>
+      <div class="profile"><span class="profile-icon">●</span> Gerente / CSA</div>
+    </div>
+  </header>
+
+  <main id="top">
+    <div class="layout">
+      <section id="visita">
+        <div class="eyebrow">Registro de campo</div>
+        <h1>Visita comercial,<br><strong>mais próxima</strong> da operação.</h1>
+        <p class="intro">Registre o contexto do cliente e a condição do equipamento em poucos passos. Um resumo objetivo para orientar o próximo atendimento.</p>
+
+        <form id="visit-form">
+          <section class="form-card">
+            <div class="section-title">
+              <div class="section-icon">▣</div>
+              <div><p class="section-kicker">01 / Contexto da visita</p><h2>Quem estamos visitando?</h2></div>
+              <span class="optional">Obrigatório</span>
+            </div>
+            <div class="fields">
+              <label class="field full">Nome do cliente <span class="required">*</span><input id="client" name="client" required placeholder="Ex.: Agropecuária Santa Clara"></label>
+              <label class="field">Propriedade / empresa <span class="required">*</span><input id="property" name="property" required placeholder="Ex.: Fazenda Boa Vista"></label>
+              <label class="field">Data da visita <span class="required">*</span><input id="visitDate" name="visitDate" type="date" required></label>
+              <label class="field full">Nome do gerente / CSA<input id="consultant" name="consultant" placeholder="Quem está realizando a visita?"></label>
+            </div>
+          </section>
+
+          <section class="form-card" id="equipamento">
+            <div class="section-title">
+              <div class="section-icon">⚒</div>
+              <div><p class="section-kicker">02 / Identificação</p><h2>Qual máquina está no campo?</h2></div>
+            </div>
+            <div class="fields">
+              <label class="field">Modelo do equipamento <span class="required">*</span><input id="model" name="model" required placeholder="Ex.: 524K-II"></label>
+              <label class="field">Chassi / número de série <span class="required">*</span><input id="chassis" name="chassis" required placeholder="Ex.: 1DW524K..."></label>
+              <label class="field">Horímetro <span class="required">*</span><input id="hourmeter" name="hourmeter" type="number" min="0" step="0.1" required placeholder="0,0"></label>
+              <div class="field">Estado atual do equipamento <span class="required">*</span>
+                <div class="status-options">
+                  <button type="button" class="status-option active" data-status="operacional"><span class="status-dot"></span>Operacional</button>
+                  <button type="button" class="status-option stopped" data-status="parada"><span class="status-dot"></span>Máquina parada</button>
+                </div>
+                <input id="status" name="status" type="hidden" value="operacional">
+              </div>
+            </div>
+          </section>
+
+          <section class="form-card" id="fotos">
+            <div class="section-title">
+              <div class="section-icon">▧</div>
+              <div><p class="section-kicker">03 / Evidências da visita</p><h2>Fotografias da máquina</h2></div>
+              <span class="optional">Opcional</span>
+            </div>
+            <div style="margin-top:26px">
+              <label class="photo-dropzone" for="photos-input">
+                <span class="photo-dropzone-icon">▧</span>
+                <span><strong>Adicionar fotografias</strong><small>Selecione uma ou várias imagens do equipamento</small></span>
+                <span class="photo-button">Escolher fotos</span>
+              </label>
+              <input id="photos-input" type="file" accept="image/*" multiple capture="environment">
+              <div id="photo-grid" class="photo-grid" aria-live="polite"></div>
+            </div>
+          </section>
+
+          <section class="form-card" id="observacoes">
+            <div class="section-title">
+              <div class="section-icon">✎</div>
+              <div><p class="section-kicker">04 / Próximo passo</p><h2>O que merece atenção?</h2></div>
+              <span class="optional">Opcional</span>
+            </div>
+            <label class="field" style="margin-top:26px">Observações da visita<textarea id="notes" name="notes" placeholder="Descreva necessidades, oportunidades, peças ou serviços recomendados..."></textarea></label>
+          </section>
+
+          <div class="actions">
+            <button class="button clear" type="button" id="clear-button">Limpar formulário</button>
+            <button class="button primary" type="submit">▣ &nbsp; Salvar visita &nbsp; →</button>
+          </div>
+        </form>
+      </section>
+
+      <aside>
+        <div class="summary">
+          <div class="summary-head">
+            <small>Resumo rápido</small>
+            <h2>Sua visita</h2>
+            <div class="completion"><div><strong id="completion">0</strong><span>%</span></div><p><span id="completed">0</span> de 5<br>campos principais</p></div>
+            <div class="progress"><div id="progress-bar" class="progress-bar"></div></div>
+          </div>
+          <div class="summary-list">
+            <div class="summary-item"><span class="summary-item-icon">⌖</span><div><p class="summary-label">Cliente & propriedade</p><p id="summary-client" class="summary-value">Ainda não informado</p><p id="summary-property" class="summary-subvalue">Preencha no formulário</p></div></div>
+            <div class="summary-item"><span class="summary-item-icon">⚒</span><div><p class="summary-label">Equipamento</p><p id="summary-model" class="summary-value">Ainda não informado</p><p id="summary-chassis" class="summary-subvalue">Chassi pendente</p></div></div>
+            <div class="summary-item"><span class="summary-item-icon">◴</span><div><p class="summary-label">Horímetro</p><p id="summary-hourmeter" class="summary-value">Ainda não informado</p><p id="summary-date" class="summary-subvalue"></p></div></div>
+            <div class="summary-item"><span class="summary-item-icon">●</span><div><p class="summary-label">Situação</p><p id="summary-status" class="summary-value">Operacional</p><p class="summary-subvalue">Status informado no campo</p></div></div>
+          </div>
+          <div class="summary-foot">⌁ Rascunho salvo automaticamente neste dispositivo</div>
+        </div>
+        <div class="tip"><strong>Dica de campo</strong>Confira o chassi diretamente na plaqueta do equipamento antes de concluir o registro.</div>
+      </aside>
+    </div>
+  </main>
+
+  <footer><div class="footer-inner"><span>Field Visit · Registro de visita comercial</span><span>Uso interno · Gerente / CSA</span></div></footer>
+  <div id="toast" class="toast" role="status"></div>
+
+  <script>
+    // Defina este valor no GitHub Pages depois de publicar o Apps Script como Web App.
+    const APPS_SCRIPT_URL = window.APP_SCRIPT_URL || 'https://script.google.com/macros/s/AKfycbzRY-Ei1IA0eQyPt2Dm_ozMqV4f6EEeIY66Un0ZY8SadKurxJ38y7v1asOk637-cKhm3A/exec';
+    const MAX_PHOTOS = 6;
+    const MAX_IMAGE_SIDE = 1600;
+
+    const form = document.getElementById('visit-form');
+    const photoInput = document.getElementById('photos-input');
+    const photoGrid = document.getElementById('photo-grid');
+    const toast = document.getElementById('toast');
+    const fields = ['client', 'property', 'model', 'chassis', 'hourmeter'];
+    let photos = [];
+
+    document.getElementById('visitDate').value = new Date().toISOString().slice(0, 10);
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add('show');
+      window.clearTimeout(showToast.timer);
+      showToast.timer = window.setTimeout(() => toast.classList.remove('show'), 3200);
+    }
+
+    function formatDate(value) {
+      if (!value) return '';
+      return new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' }).format(new Date(value + 'T12:00:00'));
+    }
+
+    function saveDraft() {
+      const data = Object.fromEntries(new FormData(form).entries());
+      localStorage.setItem('john-deere-visit-draft-html', JSON.stringify(data));
+    }
+
+    function updateSummary() {
+      const data = Object.fromEntries(new FormData(form).entries());
+      const completed = fields.filter((field) => data[field]).length;
+      const percentage = Math.round(completed / fields.length * 100);
+      document.getElementById('completion').textContent = percentage;
+      document.getElementById('completed').textContent = completed;
+      document.getElementById('progress-bar').style.width = Math.max(percentage, 8) + '%';
+      document.getElementById('summary-client').textContent = data.client || 'Ainda não informado';
+      document.getElementById('summary-property').textContent = data.property || 'Preencha no formulário';
+      document.getElementById('summary-model').textContent = data.model || 'Ainda não informado';
+      document.getElementById('summary-chassis').textContent = data.chassis || 'Chassi pendente';
+      document.getElementById('summary-hourmeter').textContent = data.hourmeter ? data.hourmeter + ' horas' : 'Ainda não informado';
+      document.getElementById('summary-date').textContent = formatDate(data.visitDate);
+      document.getElementById('summary-status').textContent = data.status === 'parada' ? 'Máquina parada' : 'Operacional';
+      saveDraft();
+    }
+
+    function renderPhotos() {
+      photoGrid.innerHTML = photos.map((photo) => `
+        <div class="photo-preview">
+          <img src="${photo.url}" alt="${photo.name.replace(/"/g, '&quot;')}">
+          <button type="button" aria-label="Remover foto" data-remove="${photo.id}">×</button>
+          <div class="photo-name">${photo.name}</div>
+        </div>
+      `).join('');
+    }
+
+    photoInput.addEventListener('change', (event) => {
+      Array.from(event.target.files || []).filter((file) => file.type.startsWith('image/')).forEach((file) => {
+        if (photos.length >= MAX_PHOTOS) return;
+        photos.push({ id: Date.now() + Math.random(), name: file.name, url: URL.createObjectURL(file) });
+      });
+      renderPhotos();
+      if (photos.length >= MAX_PHOTOS) showToast(`Limite de ${MAX_PHOTOS} fotos atingido.`);
+      event.target.value = '';
+    });
+
+    photoGrid.addEventListener('click', (event) => {
+      const button = event.target.closest('[data-remove]');
+      if (!button) return;
+      const photo = photos.find((item) => String(item.id) === button.dataset.remove);
+      if (photo) URL.revokeObjectURL(photo.url);
+      photos = photos.filter((item) => String(item.id) !== button.dataset.remove);
+      renderPhotos();
+    });
+
+    document.querySelectorAll('input, textarea, select').forEach((element) => element.addEventListener('input', updateSummary));
+    document.querySelectorAll('[data-status]').forEach((button) => button.addEventListener('click', () => {
+      document.querySelectorAll('[data-status]').forEach((item) => item.classList.remove('active'));
+      button.classList.add('active');
+      document.getElementById('status').value = button.dataset.status;
+      updateSummary();
+    }));
+
+    async function compressPhoto(file) {
+      const bitmap = await createImageBitmap(file);
+      const scale = Math.min(1, MAX_IMAGE_SIDE / Math.max(bitmap.width, bitmap.height));
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.round(bitmap.width * scale);
+      canvas.height = Math.round(bitmap.height * scale);
+      canvas.getContext('2d').drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.78);
+      bitmap.close();
+      return { name: file.name, mimeType: 'image/jpeg', dataUrl };
+    }
+
+    async function sendVisit() {
+      if (APPS_SCRIPT_URL.includes('COLE_A_URL')) {
+        throw new Error('Configure APPS_SCRIPT_URL no index.html antes de enviar.');
+      }
+      const data = Object.fromEntries(new FormData(form).entries());
+      const photoFiles = photos.slice(0, MAX_PHOTOS);
+      const encodedPhotos = await Promise.all(photoFiles.map(async (photo) => {
+        const response = await fetch(photo.url);
+        const blob = await response.blob();
+        return compressPhoto(new File([blob], photo.name, { type: blob.type }));
+      }));
+      const response = await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ ...data, photos: encodedPhotos })
+      });
+      const result = await response.json();
+      if (!result.ok) throw new Error(result.message || 'Não foi possível registrar a visita.');
+      return result;
+    }
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (!form.reportValidity()) return;
+      const submitButton = form.querySelector('button[type="submit"]');
+      submitButton.disabled = true;
+      submitButton.textContent = 'Enviando...';
+      try {
+        const result = await sendVisit();
+        localStorage.removeItem('john-deere-visit-draft-html');
+        showToast('Visita salva. PDF gerado no Google Drive.');
+        if (result.pdfUrl) window.open(result.pdfUrl, '_blank', 'noopener');
+      } catch (error) {
+        showToast(error.message);
+      } finally {
+        submitButton.disabled = false;
+        submitButton.innerHTML = '▣ &nbsp; Salvar visita &nbsp; →';
+      }
+    });
+
+    document.getElementById('clear-button').addEventListener('click', () => {
+      if (!window.confirm('Deseja limpar os dados preenchidos?')) return;
+      photos.forEach((photo) => URL.revokeObjectURL(photo.url));
+      photos = [];
+      form.reset();
+      document.getElementById('visitDate').value = new Date().toISOString().slice(0, 10);
+      document.getElementById('status').value = 'operacional';
+      document.querySelectorAll('[data-status]').forEach((item) => item.classList.toggle('active', item.dataset.status === 'operacional'));
+      localStorage.removeItem('john-deere-visit-draft-html');
+      renderPhotos();
+      updateSummary();
+      showToast('Formulário limpo.');
+    });
+
+    const savedDraft = localStorage.getItem('john-deere-visit-draft-html');
+    if (savedDraft) {
+      try {
+        const data = JSON.parse(savedDraft);
+        Object.entries(data).forEach(([key, value]) => {
+          const element = document.getElementById(key);
+          if (element && key !== 'status') element.value = value;
+        });
+        if (data.status === 'parada') {
+          document.querySelector('[data-status="parada"]').click();
+        }
+      } catch (_) { localStorage.removeItem('john-deere-visit-draft-html'); }
+    }
+    updateSummary();
+  </script>
+</body>
+</html>
